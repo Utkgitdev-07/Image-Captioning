@@ -9,20 +9,26 @@ This project combines image captioning and segmentation using deep learning mode
 - Support for MS COCO dataset
 
 ## Setup
-1. Create a virtual environment:
+
+1. Download the MS COCO dataset:
+- https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset/data
+- Place them in the appropriate directory structure:
+data/
+└── coco/
+    ├── train2017/
+    ├── val2017/
+    └── annotations/
+
+2. Create a virtual environment:
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 ```
 
-2. Install dependencies:
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-
-3. Download the MS COCO dataset:
-- Visit [COCO Dataset](https://cocodataset.org/#download)
-- Download 2017 Train/Val annotations and Train/Val images
 
 4. Configure the environment:
 - Create a `.env` file and set the required paths
