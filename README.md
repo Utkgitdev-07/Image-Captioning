@@ -30,6 +30,11 @@ pip install -r requirements.txt
 
 ## Project Structure
 ```
+├── data/
+│   └── coco/
+│    ├── train2017/
+│    ├── val2017/
+│    └── annotations/
 ├── config/
 │   └── config.py           # Configuration settings
 ├── models/
@@ -45,6 +50,8 @@ pip install -r requirements.txt
 └── train/
     ├── train_caption.py   # Training script for captioning
     └── train_segment.py   # Training script for segmentation
+├── requirements.txt
+├── README.md
 ```
 
 ## Usage
