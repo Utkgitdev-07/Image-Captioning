@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Caption and Segmentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .preview-image {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Image Caption and Segmentation</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="upload-form">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Choose an image</label>
+                                <input type="file" class="form-control" id="image" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Process Image</button>
+                        </form>
+                        
+                        <div class="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Processing image...</p>
+                        </div>
+                        
+                        <div class="result-container">
+                            <h3>Results</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Original Image</h4>
+                                    <img id="original-image" class="preview-image" src="" alt="Original image">
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Segmentation</h4>
+                                    <img id="segmentation-image" class="preview-image" src="" alt="Segmentation visualization">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4>Generated Caption</h4>
+                                <p id="caption" class="lead"></p>
+                                
+                                <h4>Detected Objects</h4>
+                                <ul id="objects" class="list-group">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const imageFile = document.getElementById('image').files[0];
+            formData.append('file', imageFile);
+            
+            // Show loading spinner
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.result-container').style.display = 'none';
+            
+            try {
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Update results
+                document.getElementById('original-image').src = URL.createObjectURL(imageFile);
+                document.getElementById('segmentation-image').src = data.segmentation.visualization;
+                document.getElementById('caption').textContent = data.caption;
+                
+                // Update detected objects
+                const objectsList = document.getElementById('objects');
+                objectsList.innerHTML = '';
+                data.segmentation.classes.forEach((className, index) => {
+                    const confidence = (data.segmentation.scores[index] * 100).toFixed(2);
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = `${className} (${confidence}% confidence)`;
+                    objectsList.appendChild(li);
+                });
+                
+                // Show results
+                document.querySelector('.result-container').style.display = 'block';
+            } catch (error) {
+                alert('Error processing image: ' + error.message);
+            } finally {
+                document.querySelector('.loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
