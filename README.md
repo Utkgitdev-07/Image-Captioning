@@ -13,20 +13,22 @@ This project combines image captioning and segmentation using deep learning mode
 1. Download the MS COCO dataset:
 - https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset/data
 - Place them in the appropriate directory structure:
+```
 data/
 └── coco/
     ├── train2017/
     ├── val2017/
     └── annotations/
+```
 
 2. Create a virtual environment:
-```bash
+```
 python -m venv venv
 source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 ```
 
 3. Install dependencies:
-```bash
+```
 pip install -r requirements.txt
 ```
 
